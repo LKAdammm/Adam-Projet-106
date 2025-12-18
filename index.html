@@ -4,60 +4,256 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Royal GitHub Casino</title>
-    <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Roboto:wght@300;400&display=swap" rel="stylesheet">
+
+    <style>
+        /* --- PARTIE DESIGN (CSS) --- */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #1a1a1a; /* Fond noir/gris */
+            color: #eee;
+            text-align: center;
+        }
+
+        h1, h2, h3, .logo {
+            font-family: 'Cinzel', serif;
+            color: #d4af37; /* Couleur OR */
+        }
+
+        /* En-tête */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 50px;
+            background: linear-gradient(to bottom, #000000, #2c2c2c);
+            border-bottom: 3px solid #d4af37;
+        }
+
+        .logo { font-size: 1.5em; font-weight: bold; letter-spacing: 2px; }
+        #player-credits { color: #2ecc71; font-weight: bold; font-size: 1.2em; }
+
+        /* Bannière principale */
+        #hero {
+            padding: 80px 20px;
+            background: radial-gradient(circle, #333333 0%, #111111 100%);
+            border-bottom: 2px solid #d4af37;
+        }
+
+        #hero h1 { font-size: 3em; margin-bottom: 10px; text-shadow: 2px 2px 4px #000; }
+        
+        /* Boutons dorés */
+        .btn-play {
+            background: linear-gradient(to bottom, #d4af37, #a8862d);
+            color: #000;
+            padding: 10px 25px;
+            border: 1px solid #ffe6a1;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 1em;
+            margin-top: 10px;
+            transition: transform 0.1s;
+        }
+        .btn-play:active { transform: scale(0.95); }
+        .btn-play:hover { background: linear-gradient(to bottom, #ffe6a1, #d4af37); }
+
+        /* Section des tables de jeu */
+        #games-section { padding: 50px 20px; }
+        
+        .games-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 30px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .game-card {
+            background: #2a2a2a;
+            border: 1px solid #444;
+            border-radius: 10px;
+            padding: 20px;
+            width: 300px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+            position: relative;
+        }
+
+        /* Couleurs spécifiques par jeu */
+        .blackjack-theme { border-top: 4px solid #e74c3c; } /* Rouge */
+        .roulette-theme { border-top: 4px solid #2ecc71; } /* Vert */
+        .slots-theme { border-top: 4px solid #f1c40f; } /* Jaune */
+
+        .game-area {
+            margin-top: 15px;
+            padding: 15px;
+            background-color: #111;
+            border-radius: 5px;
+            min-height: 80px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Zone de résultat */
+        #bj-result { font-weight: bold; margin-top: 5px; min-height: 1.2em; }
+        .win { color: #2ecc71; }
+        .lose { color: #e74c3c; }
+
+        footer { margin-top: 50px; padding: 20px; color: #555; font-size: 0.8em; }
+    </style>
 </head>
 <body>
 
     <header>
-        <div class="logo">ROYAL GITHUB CASINO</div>
-        <nav>
-            <span>Crédits : <span id="player-credits">1000</span> $</span>
-        </nav>
+        <div class="logo">ROYAL GITHUB</div>
+        <div>Banque : <span id="player-credits">1000</span> $</div>
     </header>
 
     <section id="hero">
-        <h1>Tentez votre chance</h1>
-        <p>Des jeux classiques, une ambiance exclusive. Jouez pour le fun avec nos crédits virtuels.</p>
-        <a href="#games-section" class="btn-gold">Voir les jeux</a>
+        <h1>CASINO</h1>
+        <p>Faites vos jeux, rien ne va plus.</p>
     </section>
 
     <section id="games-section">
-        <h2>Nos Tables de Jeux</h2>
         <div class="games-container">
             
             <div class="game-card blackjack-theme">
-                <h3>Blackjack 21</h3>
-                <p>Battez le croupier sans dépasser 21.</p>
-                <div class="game-area" id="blackjack-area">
-                    <p>Votre main : <span id="bj-player-hand">...</span></p>
-                    <button id="bj-deal-btn" class="btn-play">Distribuer</button>
+                <h3>Blackjack Express</h3>
+                <p>Tentez de faire 21 !<br><small>(Coût: 50$)</small></p>
+                <div class="game-area">
+                    <p>Vos cartes : <span id="bj-hand" style="color:#fff">--</span></p>
+                    <p id="bj-result"></p>
+                    <button class="btn-play" onclick="playBlackjack()">DISTRIBUER</button>
                 </div>
             </div>
 
             <div class="game-card roulette-theme">
-                <h3>Roulette Royale</h3>
-                <p>Rouge ou Noir ? Faites vos jeux.</p>
-                 <div class="game-area">
-                    <p class="coming-soon">Bientôt disponible</p>
-                    <div class="roulette-wheel-placeholder"></div>
+                <h3>Roulette Rouge/Noir</h3>
+                <p>Doublez votre mise !<br><small>(Coût: 100$)</small></p>
+                <div class="game-area">
+                    <p>Résultat : <span id="rl-result" style="color:#fff">--</span></p>
+                    <button class="btn-play" onclick="playRoulette()">LANCER LA BILLE</button>
                 </div>
             </div>
 
             <div class="game-card slots-theme">
-                <h3>Lucky Slots</h3>
-                <p>Alignez les symboles pour le jackpot.</p>
-                 <div class="game-area">
-                     <p class="coming-soon">Bientôt disponible</p>
+                <h3>Jackpot 777</h3>
+                <p>Alignez les 3 chiffres !<br><small>(Coût: 20$)</small></p>
+                <div class="game-area">
+                    <p id="slot-screen" style="font-size: 1.5em; letter-spacing: 5px;">0 0 0</p>
+                    <button class="btn-play" onclick="playSlots()">TOURNER</button>
                 </div>
             </div>
+
         </div>
     </section>
 
     <footer>
-        <p>© 2023 Royal GitHub Casino - Ceci est une démo technique, aucun argent réel n'est impliqué.</p>
+        © 2025 Royal GitHub Casino - Argent fictif uniquement.
     </footer>
 
-    <script src="script.js"></script>
+    <script>
+        // Variables globales
+        let credits = 1000;
+        const creditsDisplay = document.getElementById('player-credits');
+
+        // Fonction pour mettre à jour l'affichage de l'argent
+        function updateCredits(amount) {
+            credits += amount;
+            creditsDisplay.textContent = credits;
+            
+            // Animation flash couleur
+            if(amount > 0) creditsDisplay.style.color = "#2ecc71"; // Vert si gain
+            else creditsDisplay.style.color = "#e74c3c"; // Rouge si perte
+            
+            setTimeout(() => { creditsDisplay.style.color = "#2ecc71"; }, 500);
+        }
+
+        // --- JEU 1 : BLACKJACK ---
+        function playBlackjack() {
+            if(credits < 50) return alert("Pas assez d'argent !");
+            updateCredits(-50); // Prix de la partie
+
+            const handSpan = document.getElementById('bj-hand');
+            const resultSpan = document.getElementById('bj-result');
+
+            // Tirage aléatoire entre 12 et 22 (pour simplifier la démo)
+            let score = Math.floor(Math.random() * 11) + 12; 
+            
+            handSpan.textContent = score;
+
+            if(score === 21) {
+                resultSpan.innerHTML = "BLACKJACK ! +150$";
+                resultSpan.className = "win";
+                updateCredits(150);
+            } else if (score > 21) {
+                resultSpan.innerHTML = "Brûlé ! (Trop haut)";
+                resultSpan.className = "lose";
+            } else {
+                resultSpan.innerHTML = "Score : " + score;
+                resultSpan.className = "";
+                // Pour la démo, on gagne si on fait 18, 19 ou 20
+                if(score >= 18) {
+                    resultSpan.innerHTML += " - Gagné ! +80$";
+                    resultSpan.className = "win";
+                    updateCredits(80);
+                } else {
+                    resultSpan.innerHTML += " - Perdu contre la banque.";
+                    resultSpan.className = "lose";
+                }
+            }
+        }
+
+        // --- JEU 2 : ROULETTE ---
+        function playRoulette() {
+            if(credits < 100) return alert("Pas assez d'argent !");
+            updateCredits(-100);
+
+            const resultSpan = document.getElementById('rl-result');
+            resultSpan.textContent = "La bille tourne...";
+            
+            setTimeout(() => {
+                // 0 = Rouge (Gagne), 1 = Noir (Perd)
+                let outcome = Math.random() < 0.5; // 50% de chance
+                
+                if(outcome) {
+                    resultSpan.textContent = "🔴 ROUGE ! Gagné (+200$)";
+                    resultSpan.className = "win";
+                    updateCredits(200);
+                } else {
+                    resultSpan.textContent = "⚫ NOIR ! Perdu";
+                    resultSpan.className = "lose";
+                }
+            }, 1000); // Petit délai pour le suspense
+        }
+
+        // --- JEU 3 : SLOTS ---
+        function playSlots() {
+            if(credits < 20) return alert("Pas assez d'argent !");
+            updateCredits(-20);
+
+            const screen = document.getElementById('slot-screen');
+            
+            // Générer 3 chiffres entre 1 et 5
+            let n1 = Math.floor(Math.random() * 5) + 1;
+            let n2 = Math.floor(Math.random() * 5) + 1;
+            let n3 = Math.floor(Math.random() * 5) + 1;
+
+            screen.textContent = `${n1} ${n2} ${n3}`;
+
+            if(n1 === n2 && n2 === n3) {
+                alert("JACKPOT !!! +500$");
+                updateCredits(500);
+            } else if(n1 === n2 || n2 === n3 || n1 === n3) {
+                 // Petite victoire pour 2 chiffres pareils
+                 updateCredits(10);
+            }
+        }
+    </script>
 </body>
 </html>
